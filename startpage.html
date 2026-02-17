@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Start Page</title>
+
+<style>
+:root{
+  /* tune these values to taste */
+  --tile: 64px;          /* size of the icon square (try 72, 64, 80) */
+  --radius: 16px;        /* rounded corner */
+  --gap: 18px;           /* spacing between tiles */
+  --label-size: 11px;    /* label font-size */
+  --grid-max: 960px;     /* max width of the icons grid (keeps center column) */
+
+  --bg: #2c2c2e;         /* dark background fallback */
+  --panel: rgba(255,255,255,0.04);
+  --panel2: rgba(255,255,255,0.06);
+  --text: rgba(255,255,255,0.92);
+  --sub: rgba(255,255,255,0.55);
+}
+
+/* light theme override (optional) */
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f4f5f7;
+    --panel: rgba(255,255,255,.04);
+    --panel2: rgba(0,0,0,0.05);
+    --text: rgba(0,0,0,0.86);
+    --sub: rgba(0,0,0,0.65);
+  }
+}
+html, body { height: 100%; }
+
+body{
+  margin:0;
+
+  /* Safari-like tint overlay + image */
+  background: linear-gradient(
+  to bottom,
+  rgba(255,255,255,0.35),
+  rgba(255,255,255,0.15) 40%,
+  rgba(255,255,255,0.05) 70%,
+  rgba(0,0,0,0.08)
+), url("backgrounds/bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+}
+
+
+/* container that keeps the grid centered */
+.wrap{
+  max-width: var(--grid-max);
+  margin: 0 auto;
+  padding: 28px 18px 40px;
+}
+
+/* 👇 PASTE THE NEW SEARCH BAR CODE RIGHT HERE 👇 */
+
+.safari-search{
+  display:flex;
+  justify-content:center;
+  margin: 28px 0 36px;
+}
+
+.safari-search input{
+  width: 720px;
+  max-width: 85%;
+  padding: 16px 20px;
+  border-radius: 28px;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(30px);
+  color: #222;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* 👇 then your GRID block continues normally 👇 */
+
+/* GRID - center and tighten */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, 72px);
+  justify-content: center;
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* tile looks like Safari app tile */
+a.tile{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-decoration:none;
+  color:inherit;
+
+  width: 72px;              /* Safari tile width */
+  height: 96px;            /* icon + label space */
+  font-size: var(--label-size);
+}
+
+.icon{
+  width: 64px;              /* Safari icon size */
+  height: 64px;
+  border-radius: 16px;      /* Safari rounded corners */
+  display:block;
+  margin:0 auto;
+  object-fit: cover;
+  transition: transform .12s ease;
+
+  filter: contrast(1.04) saturate(1.03);
+}
+
+.tile:hover .icon{
+  transform:scale(1.06);
+}
+
+/* the image inside the tile - cover ensures crisp / fills square */
+.tile .icon img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;   /* cover keeps aspect, fills square */
+}
+
+/* small label under the icon */
+.tile .label{
+  margin-top:6px;
+  text-align:center;
+  line-height:1.05;
+  max-width:var(--tile);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  opacity:0.95;
+  font-size:var(--label-size);
+  color: var(--text);
+}
+
+/* example: slightly lighter panel for large top area (optional) */
+.top-bar{
+  background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+}
+
+/* small helper so empty placeholders don't change layout */
+.placeholder{
+  width:var(--tile);
+  height:var(--tile);
+  border-radius:var(--radius);
+  background:rgba(0,0,0,0.12);
+}
+</style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="safari-search">
+      <input id="q" placeholder="Search or enter website name" autocomplete="off" />
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="hint">
+      Tip: press <b>⌘L</b> to jump to Safari’s real address bar, or type here and hit Enter to Google it.
+    </div>
+  </div>
+
+<script>
+  // Put your sites here.
+  // icon can be:
+  // 1) a local file you saved into the icons folder: "icons/assist.png"
+  // 2) a site favicon url: "https://www.assist.org/favicon.png"
+  // 3) leave blank and it will try a favicon automatically
+  const sites = [
+  { name: "CSUN Portal", url: "https://www.csun.edu/csun-portal", icon: "icons/csun.png" },
+  { name: "Dashboard", url: "https://canvas.csun.edu/", icon: "icons/canvas.png" },
+  { name: "ChatGPT", url: "https://chatgpt.com/", icon: "icons/chatgpt.png" },
+  { name: "Google Translate", url: "https://translate.google.com/?sl=es&tl=fr&op=translate", icon: "icons/googletranslate.png" },
+  { name: "Google", url: "https://www.google.com/", icon: "icons/google.png" },
+  { name: "Sign In", url: "https://healthy.kaiserpermanente.org/southern-california/secure/inner-door", icon: "icons/kaiser.png" },
+  { name: "YouTube", url: "https://www.youtube.com/", icon: "icons/youtube.png" },
+  { name: "United Airlines", url: "https://www.united.com/en/us", icon: "icons/united.png" },
+  { name: "Google Flights", url: "https://www.google.com/travel/flights?gl=US&hl=en-US", icon: "icons/googleflights.png" },
+  { name: "Point Solutions", url: "https://echo360.com/pointsolutions-login/", icon: "icons/echo360pointsolutions.png" },
+  { name: "Disney+", url: "https://www.disneyplus.com/home", icon: "icons/disney.png" },
+  { name: "Wells Fargo", url: "https://www.wellsfargo.com/", icon: "icons/wellsfargo.png" },
+  { name: "Chase", url: "https://www.chase.com/", icon: "icons/chase.png" },
+  { name: "Nike", url: "https://www.nike.com/", icon: "icons/nike.png" },
+  { name: "Target", url: "https://www.target.com/", icon: "icons/target.png" },
+  { name: "VCCCD Dashboard", url: "https://my.vcccd.edu/dashboard", icon: "icons/vcccd.png" },
+  { name: "Apple", url: "https://www.apple.com/", icon: "icons/apple.png" },
+  { name: "Hulu", url: "https://www.hulu.com/", icon: "icons/hulu.png" },
+  { name: "OpenStax Macro", url: "https://openstax.org/details/books/principles-macroeconomics-2e", icon: "icons/openstax.png" },
+  { name: "OpenStax Micro", url: "https://openstax.org/details/books/principles-microeconomics-2e", icon: "icons/openstax.png" },
+  { name: "Southwest", url: "https://www.southwest.com/", icon: "icons/southwest.png" },
+  { name: "Airbnb", url: "https://www.airbnb.com/", icon: "icons/airbnb.png" },
+  { name: "IKEA", url: "https://www.ikea.com/us/en/", icon: "icons/ikea.png" },
+  { name: "FMHY", url: "https://fmhy.net/", icon: "icons/freemedia.png" },
+  { name: "Twitter", url: "https://twitter.com/", icon: "icons/twitter.png" },
+  { name: "TheTVApp", url: "https://thetvapp.to/", icon: "icons/california.png" },
+  { name: "ReelSave", url: "https://reelsave.app/audio#google_vignette", icon: "icons/reelsave.png" },
+  { name: "Study Rooms", url: "https://library.csun.edu/services/study-rooms", icon: "icons/csunlibrary.png" },
+  { name: "LibCal", url: "https://csun.libcal.com/", icon: "icons/libcal.png" },
+  { name: "Dodgers Live", url: "https://mlbwebcast.com/los-angeles-dodgers-live/", icon: "icons/mlbnetwork.png" },
+  { name: "El Heraldo", url: "https://www.elheraldo.hn/elheraldoplus/factchecking/analisis/encuestas-contradictorias-saturan-al-electorado-en-la-vispera-de-las-elecciones-generales-2025-BM27097789?utm_source=chatgpt.com", icon: "icons/elheraldo.png" },
+  { name: "HiNative", url: "https://es.hinative.com/questions/15914892", icon: "icons/hinative.png" },
+  { name: "La Prensa", url: "https://www.laprensa.hn/", icon: "icons/laprensa.png" },
+  { name: "Icons8", url: "https://icons8.com/", icon: "icons/icons8.png" },
+  { name: "Reverso", url: "https://context.reverso.net/traduccion/", icon: "icons/reverso.png" },
+  { name: "More Perfect Union", url: "https://perfectunion.us/", icon: "icons/moreperfectunion.png" },
+  { name: "Vitaly", url: "https://www.vitalydesign.com/", icon: "icons/vitaly.png" },
+  { name: "CNN Live", url: "https://www.newslive.com/american/cnn-online.html", icon: "icons/cnn.png" },
+  { name: "12ft Ladder", url: "https://12ft.io/", icon: "icons/12ftladder.png" },
+  { name: "PaywallHub", url: "https://paywallhub.com/", icon: "icons/california.png" },
+  { name: "Academic Calendar", url: "https://www.csun.edu/current-students/student-academic-calendars", icon: "icons/csunacademiccalendar.png" },
+  { name: "FMovies", url: "https://www.fmovies.gd/tv/301507", icon: "icons/freemedia.png" },
+  { name: "FMHY Streaming", url: "https://fmhy.net/video#streaming-sites", icon: "icons/freemedia.png" },
+  { name: "McGraw-Hill Connect", url: "https://canvas.csun.edu/courses/170145/external_tools/88", icon: "icons/canvas.png" },
+  { name: "Amazon", url: "https://www.amazon.com/", icon: "icons/amazon.png" }
+];
+  
+
+  const grid = document.getElementById("grid");
+
+  sites.forEach(s => {
+    const a = document.createElement("a");
+    a.className = "tile";
+    a.href = s.url;
+
+    const img = document.createElement("img");
+    img.className = "icon";
+    img.loading = "lazy";
+    img.alt = s.name;
+
+    img.src = s.icon;
+
+    // If favicon.ico fails, fall back to Apple's touch icon path (sometimes works)
+    
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = s.name;
+
+    a.appendChild(img);
+    a.appendChild(label);
+    grid.appendChild(a);
+  });
+
+  // “Search” box: Enter opens a Google search
+  const q = document.getElementById("q");
+  q.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+      const text = q.value.trim();
+      if(!text) return;
+      const url = "https://www.google.com/search?q=" + encodeURIComponent(text);
+      window.location.href = url;
+    }
+  });
+</script>
+</body>
+</html>
